@@ -33,7 +33,7 @@ func Handle(req handler.Request) (handler.Response, error) {
 	}
 
 	eventType := req.Header.Get(github.EventTypeHeader)
-	event, err := github.ParseWebHook(req.Header.Get(eventType), payload)
+	event, err := github.ParseWebHook(eventType, payload)
 	if err != nil {
 		return handler.Response{
 			StatusCode: http.StatusBadRequest,
