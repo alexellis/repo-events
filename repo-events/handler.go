@@ -18,19 +18,18 @@ func Handle(req handler.Request) (handler.Response, error) {
 		return handler.Response{
 			StatusCode: http.StatusInternalServerError,
 			Body:       []byte(fmt.Sprintf("Error reading webhook secret: %s", err)),
-		}, err
+		}, fmt.Errorf("error reading webhook secret: %w", err)
 	}
 
 	payload, err := github.ValidatePayloadFromBody(req.Header.Get("Content-Type"),
 		bytes.NewBuffer(req.Body),
 		req.Header.Get(github.SHA256SignatureHeader),
 		webhookSecretKey)
-
 	if err != nil {
 		return handler.Response{
 			StatusCode: http.StatusBadRequest,
 			Body:       []byte(fmt.Sprintf("Error validating payload: %s", err.Error())),
-		}, err
+		}, fmt.Errorf("error validating payload: %w", err)
 	}
 
 	eventType := req.Header.Get(github.EventTypeHeader)
@@ -39,7 +38,7 @@ func Handle(req handler.Request) (handler.Response, error) {
 		return handler.Response{
 			StatusCode: http.StatusBadRequest,
 			Body:       []byte(fmt.Sprintf("Error parsing webhook: %s", err.Error())),
-		}, err
+		}, fmt.Errorf("error parsing webhook: %w", err)
 	}
 
 	switch event := event.(type) {
@@ -49,11 +48,11 @@ func Handle(req handler.Request) (handler.Response, error) {
 		return handler.Response{
 			StatusCode: http.StatusBadRequest,
 			Body:       []byte(fmt.Sprintf("Event type not supported: %s", eventType)),
-		}, nil
+		}, fmt.Errorf("event type not supported: %w", eventType)
 	}
 
 	return handler.Response{
 		Body:       []byte("Accepted webhook"),
 		StatusCode: http.StatusAccepted,
-	}, err
+	}, nil
 }
