@@ -48,7 +48,7 @@ func Handle(req handler.Request) (handler.Response, error) {
 		return handler.Response{
 			StatusCode: http.StatusBadRequest,
 			Body:       []byte(fmt.Sprintf("Event type not supported: %s", eventType)),
-		}, fmt.Errorf("event type not supported: %w", eventType)
+		}, fmt.Errorf("event type not supported: %s", eventType)
 	}
 
 	return handler.Response{
