@@ -8,3 +8,6 @@ functions:
     handler: ./repo-events
     image: ghcr.io/alexellis/repo-events:latest
 
+configuration:
+  templates:
+    - name: golang-http
